@@ -1,26 +1,61 @@
-USE_CAMERA_STUB := true
 
-# inherit from the proprietary version
--include vendor/samsung/samsung_on5xelte/BoardConfigVendor.mk
-
+#Bootloader
 TARGET_NO_BOOTLOADER := true
-TARGET_BOARD_PLATFORM := unknown
-TARGET_CPU_ABI := armeabi
-TARGET_BOOTLOADER_BOARD_NAME := samsung_on5xelte
+TARGET_BOOTLOADER_BOARD_NAME := universal7570
 
-BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive androidboot.selinux=permissive
+#Platform
+TARGET_BOARD_PLATFORM := exynos5
+TARGET_BOARD_PLATFORM_GPU := mali-t720
+
+# Architecture
+TARGET_ARCH := arm
+TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 :=armeabi
+TARGET_CPU_VARIANT := cortex-a53
+
+#Kernel
+TARGET_KERNEL_ARCH := arm64
+TARGET_KERNEL_HEADER_ARCH := arm64
+TARGET_USES_UNCOMPRESSED_KERNEL := true
+TARGET_PREBUILT_KERNEL := device/samsung/on5xelte/Image
+TARGET_PREBUILT_DTB := device/samsung/on5xelte/dt.img
+#BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
+BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --tags_offset 0x00000100 --board SRPPG18A000RU
 
-# fix this up by examining /proc/mtd on a running device
-BOARD_BOOTIMAGE_PARTITION_SIZE := 0x00380000
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x00480000
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 0x08c60000
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 0x105c0000
+#Partitions
+BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 39845888
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3145728000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 12075401216
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-TARGET_PREBUILT_KERNEL := device/samsung/samsung_on5xelte/kernel
+# TWRP specific build flags
+TW_THEME := portrait_hdpi
+RECOVERY_SDCARD_ON_DATA := true
+TARGET_RECOVERY_PIXEL_FORMAT := "ABGR_8888"
 
 #BOARD_HAS_NO_SELECT_BUTTON := true
 # Use this flag if the board has a ext4 partition larger than 2gb
 #BOARD_HAS_LARGE_FILESYSTEM := true
+TW_BRIGHTNESS_PATH := "/sys/devices/14800000.dsim/backlight/panel/brightness"
+TW_MAX_BRIGHTNESS := 255
+TW_DEFAULT_BRIGHTNESS := 162
+TW_NO_REBOOT_BOOTLOADER := true
+TW_HAS_DOWNLOAD_MODE := true
+TW_EXCLUDE_SUPERSU := true
+TW_INCLUDE_NTFS_3G := true
+TW_EXTRA_LANGUAGES := true
+
+# Encryption support
+TW_INCLUDE_CRYPTO := true
+#TW_INCLUDE_CRYPTO_SAMSUNG := true
+#TARGET_HW_DISK_ENCRYPTION := true
+
+# Debug flags
+#TWRP_EVENT_LOGGING := true
+TW_NEVER_UNMOUNT_SYSTEM := true
+#TARGET_USES_LOGD := true
+#TWRP_INCLUDE_LOGCAT := true
