@@ -1,8 +1,10 @@
+# Copyright (C) 2018 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
+ifneq ($(filter on5xelte, $(TARGET_DEVICE)),)
 
-ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
+include $(call all-makefiles-under,$(LOCAL_PATH))
 
-# include the non-open-source counterpart to this file
--include vendor/samsung/samsung_on5xelte/AndroidBoardVendor.mk
+endif
