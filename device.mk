@@ -26,7 +26,7 @@ $(call inherit-product, build/target/product/full.mk)
 
 
 # Get non-open-source specific aspects
-$(call inherit-product-if-exists, vendor/samsung/on5xelte/on5xelte-vendor.mk)
+$(call inherit-product-if-exists, vendor/samsung/universal7570-common/universal7570-common-vendor.mk)
 
 # Inherit common device configuration
 $(call inherit-product, device/samsung/universal7570-common/universal7570-common.mk)
