@@ -8,7 +8,7 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 PRODUCT_NAME := lineage_on5xelte
 PRODUCT_DEVICE := on5xelte
-PRODUCT_MODEL := G570F
+PRODUCT_MODEL := SM-G570F
 PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung
 PRODUCT_GMS_CLIENTID_BASE := android-samsung
