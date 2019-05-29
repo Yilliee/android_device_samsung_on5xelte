@@ -6,6 +6,19 @@ DEVICE_PATH := device/samsung/on5xelte
 # Inherit common board flags
 include device/samsung/universal7570-common/BoardConfigCommon.mk
 
+#TARGET_NO_BOOTLOADER := true
+#TARGET_BOOTLOADER_BOARD_NAME := universal7570
+
+# Architecture
+#TARGET_ARCH := arm
+#TARGET_ARCH_VARIANT := armv7-a-neon
+#TARGET_CPU_ABI := armeabi-v7a
+#TARGET_CPU_ABI2 :=armeabi
+#TARGET_CPU_VARIANT := cortex-a53
+
+PRODUCT_USE_VNDK_OVERRIDE := true
+BOARD_VNDK_VERSION=current
+
 #Kernel
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
