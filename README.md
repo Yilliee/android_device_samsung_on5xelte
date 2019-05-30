@@ -1,1 +1,1 @@
-# adroid_device_7570-common_lineage
+Device Tree For Device on5xelte
