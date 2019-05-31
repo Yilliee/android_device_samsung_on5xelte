@@ -104,7 +104,7 @@ PRODUCT_PACKAGES += \
     RemovePackages
 
 # Property overrides
--include $(LOCAL_PATH)/system_prop.mk
+-include $(LOCAL_PATH)/system.prop
 
 # Call proprietary blob setup
 $(call inherit-product, vendor/samsung/universal7570-common/universal7570-common-vendor.mk)
