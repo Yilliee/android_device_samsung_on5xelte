@@ -1,7 +1,4 @@
-# Copyright (C) 2018 The LineageOS Project
-# SPDX-License-Identifier: Apache-2.0
-
-COMMON_PATH := device/samsung/universal7570-common
+DEVICE_PATH := device/samsung/on5xelte
 
 # Platform
 BOARD_VENDOR := samsung
@@ -10,49 +7,60 @@ TARGET_SOC := exynos7570
 TARGET_BOOTLOADER_BOARD_NAME := universal7570
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
+TARGET_BOARD_PLATFORM_GPU := mali-t720
 
 # Architecture
+ifneq ($(FORCE_32_BIT),true)
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 := 
+TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := cortex-a53
 
-# Secondary Architecture
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv7-a-neon
+TARGET_2ND_ARCH_VARIANT := armv8-a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
+else
+TARGET_ARCH := arm
+TARGET_ARCH_VARIANT := armv8-a
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
+TARGET_CPU_VARIANT := cortex-a53
+
+TARGET_USES_64_BIT_BINDER := true
+endif
 
 # Kernel
-TARGET_KERNEL_ARCH := arm64
-TARGET_KERNEL_HEADER_ARCH := arm64
-TARGET_KERNEL_SOURCE := kernel/samsung/universal7570
-KERNEL_TOOLCHAIN_PREFIX:=/home/nick/android/lineage/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
-TARGET_KERNEL_CLANG_COMPILE := false
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := /home/nick/android/lineage/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
-
-# Image
-BOARD_CUSTOM_BOOTIMG_MK := hardware/samsung/mkbootimg.mk
+BOARD_DTBTOOL_ARGS := -2
 BOARD_KERNEL_IMAGE_NAME := Image
+BOARD_KERNEL_SEPARATED_DT := true
+BOARD_KERNEL_TAGS_OFFSET := 0x00000100
+TARGET_KERNEL_CONFIG := exynos7570-on5xelte_mea_defconfig
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --tags_offset 0x00000100
-TARGET_CUSTOM_DTBTOOL := dtbhtoolExynos
-BOARD_KERNEL_SEPARATED_DT := True
+BOARD_KERNEL_TAGS_OFFSET := 0x00000100
+BOARD_RAMDISK_OFFSET := 0x01000000
+TARGET_KERNEL_CLANG_COMPILE := false
+TARGET_KERNEL_SOURCE := kernel/samsung/on5xelte
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := $(pwd)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-opt-linux-android-
 
-#ВАРНИНХ!
-BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
-#ВАРНИНХ!
+# HIDL
+DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
+DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
+
+# Overlay
+DEVICE_PACKAGE_OVERLAYS += $(DEVICE_PATH)/overlay
+PRODUCT_ENFORCE_RRO_TARGETS := framework-res
 
 # Partitions
-BOARD_BOOTIMAGE_PARTITION_SIZE     := 33554432
+BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432
+BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 39845888
-BOARD_SYSTEMIMAGE_PARTITION_SIZE   := 3145728000
-#BOARD_VENDORIMAGE_PARTITION_SIZE   := 681574400
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 12066992128
-BOARD_CACHEIMAGE_PARTITION_SIZE    := 209715200
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3145728000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 12075401216  
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Filesystem
@@ -62,30 +70,11 @@ TARGET_USERIMAGES_USE_F2FS := true
 # Extended Filesystem Support
 TARGET_EXFAT_DRIVER := sdfat
 
+# Encryption support
+TARGET_HW_DISK_ENCRYPTION := true
+
 # Recovery
-TARGET_RECOVERY_PIXEL_FORMAT := "ABGR_8888"
-TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/recovery/etc/recovery.fstab
-
-# Recovery (TWRP)
-ifeq ($(RECOVERY_VARIANT),twrp)
-RECOVERY_SDCARD_ON_DATA := true
-TW_THEME := portrait_hdpi
-TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel/brightness"
-TW_MAX_BRIGHTNESS := 25500
-TW_DEFAULT_BRIGHTNESS := 12800
-TW_NO_REBOOT_BOOTLOADER := true
-TW_HAS_DOWNLOAD_MODE := true
-TW_INCLUDE_NTFS_3G := true
-TW_EXCLUDE_SUPERSU := true
-TW_EXTRA_LANGUAGES := true
-TW_USE_NEW_MINADBD := true
-TW_INCLUDE_CRYPTO := true
-TW_INCLUDE_FBE := true
-endif
-
-# Android Verified Boot
-BOARD_AVB_ENABLE := false
-BOARD_BUILD_DISABLED_VBMETAIMAGE := true
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/etc/recovery.fstab
 
 # VNDK
 BOARD_VNDK_VERSION := current
@@ -93,9 +82,6 @@ BOARD_VNDK_RUNTIME_DISABLE := true
 
 # Vendor
 TARGET_COPY_OUT_VENDOR := vendor
-
-# Enable 64-bits binder
-TARGET_USES_64_BIT_BINDER := true
 
 # Graphics
 TARGET_USES_HWC2 := true
@@ -115,23 +101,21 @@ TARGET_LD_SHIM_LIBS := \
     /vendor/lib/hw/audio.primary.universal7570.so|libshim_audio.so
 
 # Include
-TARGET_SPECIFIC_HEADER_PATH := $(COMMON_PATH)/include
+TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
 
 # Properties
 BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
-TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
+TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
 
 # SELinux
-BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(COMMON_PATH)/sepolicy/private
+include device/qcom/sepolicy-legacy/sepolicy.mk
+BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy
 
-# Lineage hardware
-ifneq ($(findstring lineage, $(TARGET_PRODUCT)),)
-BOARD_HARDWARE_CLASS := \
-    hardware/samsung/lineagehw
-endif
+# LineageHW
+JAVA_SOURCE_OVERLAYS := org.lineageos.hardware|$(DEVICE_PATH)/lineagehw|**/*.java
 
 # Releasetools
-TARGET_RELEASETOOLS_EXTENSIONS := $(COMMON_PATH)/releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := $(DEVICE_PATH)
 
 # Inherit from the proprietary version
--include vendor/samsung/universal7570-common/BoardConfigVendor.mk
+-include vendor/samsung/on5xelte/BoardConfigVendor.mk
