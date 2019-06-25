@@ -1,3 +1,7 @@
+#
+# Copyright (C) 2016 The CyanogenMod Project
+#           (C) 2017 The LineageOS Project
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,13 +16,10 @@
 #
 
 # Initialise device config
-$(call inherit-product, device/samsung/on5xelte/device.mk)
+$(call inherit-product, device/samsung/on5xelte/full_on5xelte.mk)
 
-# Inherit common Lineage phone.
+# Inherit common LineageOS phone.
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
-
-# Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := lineage_on5xelte

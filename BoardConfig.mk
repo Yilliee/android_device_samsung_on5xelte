@@ -1,121 +1,28 @@
+#
+# Copyright (C) 2017 The LineageOS Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Inherit from Exynos7570-common
+include device/samsung/universal7570-common/BoardConfigCommon.mk
+
+TARGET_OTA_ASSERT_DEVICE := on5xelte
+
 DEVICE_PATH := device/samsung/on5xelte
 
-# Platform
-BOARD_VENDOR := samsung
-TARGET_BOARD_PLATFORM := exynos5
-TARGET_SOC := exynos7570
-TARGET_BOOTLOADER_BOARD_NAME := universal7570
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_RADIOIMAGE := true
-TARGET_BOARD_PLATFORM_GPU := mali-t720
-
-# Architecture
-ifneq ($(FORCE_32_BIT),true)
-TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-a
-TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
-TARGET_CPU_VARIANT := cortex-a53
-
-TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-a
-TARGET_2ND_CPU_ABI := armeabi-v7a
-TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := cortex-a53
-else
-TARGET_ARCH := arm
-TARGET_ARCH_VARIANT := armv8-a
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_CPU_VARIANT := cortex-a53
-
-TARGET_USES_64_BIT_BINDER := true
-endif
-
-# Kernel
-BOARD_DTBTOOL_ARGS := -2
-BOARD_KERNEL_IMAGE_NAME := Image
-BOARD_KERNEL_SEPARATED_DT := true
-BOARD_KERNEL_TAGS_OFFSET := 0x00000100
-TARGET_KERNEL_CONFIG := exynos7570-on5xelte_mea_defconfig
-BOARD_KERNEL_BASE := 0x10000000
-BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_TAGS_OFFSET := 0x00000100
-BOARD_RAMDISK_OFFSET := 0x01000000
-TARGET_KERNEL_CLANG_COMPILE := false
-TARGET_KERNEL_SOURCE := kernel/samsung/on5xelte
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := $(pwd)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-opt-linux-android-
-
-# HIDL
-DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
-DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
-
-# Overlay
-DEVICE_PACKAGE_OVERLAYS += $(DEVICE_PATH)/overlay
-PRODUCT_ENFORCE_RRO_TARGETS := framework-res
-
-# Partitions
-BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432
-BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 39845888
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3145728000
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 12075401216  
-BOARD_FLASH_BLOCK_SIZE := 131072
-
-# Filesystem
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
-
-# Extended Filesystem Support
-TARGET_EXFAT_DRIVER := sdfat
-
-# Encryption support
-TARGET_HW_DISK_ENCRYPTION := true
-
-# Recovery
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/etc/recovery.fstab
-
-# VNDK
-BOARD_VNDK_VERSION := current
-BOARD_VNDK_RUNTIME_DISABLE := true
-
-# Vendor
-TARGET_COPY_OUT_VENDOR := vendor
-
-# Graphics
-TARGET_USES_HWC2 := true
-NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
-OVERRIDE_RS_DRIVER := libRSDriverArm.so
-
-# DEX Pre-optimization
-ifeq ($(HOST_OS),linux)
-  ifneq ($(TARGET_BUILD_VARIANT),eng)
-    WITH_DEXPREOPT ?= true
-    WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
-  endif
-endif
-
-# Shims
-TARGET_LD_SHIM_LIBS := \
-    /vendor/lib/hw/audio.primary.universal7570.so|libshim_audio.so
-
-# Include
-TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
-
-# Properties
-BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
-
-# SELinux
-include device/qcom/sepolicy-legacy/sepolicy.mk
-BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy
-
-# LineageHW
-JAVA_SOURCE_OVERLAYS := org.lineageos.hardware|$(DEVICE_PATH)/lineagehw|**/*.java
-
-# Releasetools
-TARGET_RELEASETOOLS_EXTENSIONS := $(DEVICE_PATH)
+# Include makefiles from board folder
+-include $(DEVICE_PATH)/board/*.mk
 
 # Inherit from the proprietary version
 -include vendor/samsung/on5xelte/BoardConfigVendor.mk
