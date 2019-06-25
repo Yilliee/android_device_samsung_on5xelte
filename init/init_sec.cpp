@@ -81,9 +81,9 @@ void vendor_load_properties()
     std::string bootloader = property_get("ro.bootloader");
 
     if (bootloader.find("G570F") != std::string::npos) {
-	/* SM-A310F */
-        property_override("ro.build.fingerprint", "samsung/on5xeltejv/on5xelte:7.0/NRD90M/G570FXXU1BQI6:user/release-keys");
-        property_override("ro.build.description", "on5xeltejv-user 7.0 NRD90M G570FXXU1BQI6 release-keys");
+	/* SM-G570F */
+        property_override("ro.build.fingerprint", "samsung/on5xeltejv/on5xelte:8.0.0/R16NW/G570FXXU1CRL2:user/release-keys");
+        property_override("ro.build.description", "on5xeltejv-user 8.0.0 R16NW G570FXXU1CRL2 release-keys");
         property_override("ro.product.model", "SM-G570F");
         property_override("ro.product.device", "on5xelte");
     }
