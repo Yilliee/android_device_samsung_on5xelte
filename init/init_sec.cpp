@@ -1,49 +1,23 @@
-/*
-   Copyright (c) 2016, The CyanogenMod Project. All rights reserved.
-
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions are
-   met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of The Linux Foundation nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-   THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
-   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
-   ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
-   BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-   BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-   OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-   File Name : init_sec.c
-   Create Date : 2016.04.13
- */
-
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
-#include "vendor_init.h"
-#include "property_service.h"
-#include "log.h"
-#include "util.h"
+#include <android-base/logging.h>
+#include <android-base/properties.h>
 
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
-void property_override(char const prop[], char const value[])
-{
+#include "property_service.h"
+#include "vendor_init.h"
+
+#include "init_sec.h"
+
+#define MODEL_NAME_LEN 5  // e.g. "G570FXXU1BQI60F"
+#define BUILD_NAME_LEN 8  // e.g. "XXU1BQI6"
+#define CODENAME_LEN   10 // e.g. "on5xeltejv"
+
+
+static void property_override(char const prop[], char const value[]) {
     prop_info *pi;
 
     pi = (prop_info*) __system_property_find(prop);
@@ -53,44 +27,56 @@ void property_override(char const prop[], char const value[])
         __system_property_add(prop, strlen(prop), value, strlen(value));
 }
 
-
-void set_sim_info ()
+void property_override_dual(char const system_prop[], char const vendor_prop[], char const value[])
 {
-	FILE *file;
-	char *simslot_count_path = "/proc/simslot_count";
-	char simslot_count[2] = "\0";
-
-	file = fopen(simslot_count_path, "r");
-
-	if (file != NULL) {
-		simslot_count[0] = fgetc(file);
-		property_set("ro.multisim.simslotcount", simslot_count);
-		if(strcmp(simslot_count, "2") == 0) {
-			property_set("persist.radio.multisim.config", "dsds");
-		}
-		fclose(file);
-	}
-	else {
-		ERROR("Could not open '%s'\n", simslot_count_path);
-	}
+    property_override(system_prop, value);
+    property_override(vendor_prop, value);
 }
 
 void vendor_load_properties()
 {
+    const std::string bootloader = android::base::GetProperty("ro.bootloader", "");
+    const std::string bl_model = bootloader.substr(0, MODEL_NAME_LEN);
+    const std::string bl_build = bootloader.substr(MODEL_NAME_LEN);
 
-    std::string bootloader = property_get("ro.bootloader");
+    std::string model;  // G5700F
+    std::string device; // on5xelte
+    std::string name;    // on5xeltejv
+    std::string description;
+    std::string fingerprint;
 
-    if (bootloader.find("G570F") != std::string::npos) {
-	/* SM-G570F */
-        property_override("ro.build.fingerprint", "samsung/on5xeltejv/on5xelte:8.0.0/R16NW/G570FXXU1CRL2:user/release-keys");
-        property_override("ro.build.description", "on5xeltejv-user 8.0.0 R16NW G570FXXU1CRL2 release-keys");
-        property_override("ro.product.model", "SM-G570F");
-        property_override("ro.product.device", "on5xelte");
+    model = "SM-" + bl_model;
+
+    for (size_t i = 0; i < VARIANT_MAX; i++) {
+        std::string model_ = all_variants[i]->model;
+        if (model.compare(model_) == 0) {
+            device = all_variants[i]->codename;
+            break;
+        }
     }
 
-	set_sim_info();
+    if (device.size() == 0) {
+        LOG(ERROR) << "Could not detect device, forcing on5xelte";
+        device = "on5xelte";
+    }
 
-	std::string device = property_get("ro.product.device");
-	std::string devicename = property_get("ro.product.model");
-	ERROR("Found bootloader id %s setting build properties for %s device\n", bootloader.c_str(), devicename.c_str());
+    name = device + "xx";
+
+    description = name + "-user 7.0 NRD90M " + bl_model + bl_build + " release-keys";
+    fingerprint = "samsung/" + name + "/" + device + ":8.0.0/R16NW/" + bl_model + bl_build + ":user/release-keys";
+
+    LOG(INFO) << "Found bootloader: %s", bootloader.c_str();
+    LOG(INFO) << "Setting ro.product.model: %s", model.c_str();
+    LOG(INFO) << "Setting ro.product.device: %s", device.c_str();
+    LOG(INFO) << "Setting ro.product.name: %s", name.c_str();
+    LOG(INFO) << "Setting ro.build.product: %s", device.c_str();
+    LOG(INFO) << "Setting ro.build.description: %s", description.c_str();
+    LOG(INFO) << "Setting ro.build.fingerprint: %s", fingerprint.c_str();
+
+    property_override_dual("ro.product.model", "ro.vendor.product.model", model.c_str());
+    property_override_dual("ro.product.device", "ro.vendor.product.device", device.c_str());
+    property_override_dual("ro.product.name", "ro.vendor.product.name", name.c_str());
+    property_override("ro.build.product", device.c_str());
+    property_override("ro.build.description", description.c_str());
+    property_override_dual("ro.build.fingerprint", "ro.vendor.build.fingerprint", fingerprint.c_str());
 }
