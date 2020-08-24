@@ -1,13 +1,23 @@
 #!/bin/bash
-# Copyright (C) 2018 The LineageOS Project
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2017 The LineageOS Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 set -e
 
-# Required!
 VENDOR=samsung
 DEVICE_COMMON=universal7570-common
-DEVICE="on5xelte on5xelte"
+DEVICE=on5xelte
 
 # Load extractutils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
@@ -23,16 +33,16 @@ fi
 . "$HELPER"
 
 # Initialize the helper
-setup_vendor "$DEVICE_COMMON" "$VENDOR" "$LINEAGE_ROOT" true
+setup_vendor "$DEVICE" "$VENDOR" "$LINEAGE_ROOT"
 
 # Copyright headers and guards
-write_headers "$DEVICE"
-
-# The standard blobs
-write_makefiles "$MY_DIR"/proprietary-files.txt true
+write_headers
 
 # Offline charging
-write_makefiles "$MY_DIR"/proprietary-files-lpm.txt true
+write_makefiles "$MY_DIR"/proprietary-files-lpm.txt
 
-# We are done!
+# The standard blobs
+write_makefiles "$MY_DIR"/proprietary-files.txt
+
+# Done
 write_footers

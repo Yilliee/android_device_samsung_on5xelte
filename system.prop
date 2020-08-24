@@ -8,8 +8,42 @@ rild.libargs=-d /dev/umts_ipc0
 # read DS/SS property
 import /efs/factory.prop
 
+# Screen density
+ro.sf.lcd_density=320
+
 # Disable ConsumerIR
 config.disable_consumerir=true
 
-# Enable ADB authentication
-ro.adb.secure=1
+# read DS/SS property
+import /efs/factory.prop
+
+#Phone early start enable flag
+sys.config.phone_start_early=true
+
+# HWUI_BUILD_PROPERTIES
+ro.hwui.texture_cache_size=24
+ro.hwui.layer_cache_size=16
+ro.hwui.path_cache_size=4
+ro.hwui.texture_cache_flushrate=0.4
+ro.hwui.shape_cache_size=1
+ro.hwui.gradient_cache_size=0.5
+ro.hwui.drop_shadow_cache_size=2
+ro.hwui.r_buffer_cache_size=2
+ro.hwui.text_small_cache_width=1024
+ro.hwui.text_small_cache_height=512
+ro.hwui.text_large_cache_width=2048
+ro.hwui.text_large_cache_height=1024
+
+# Specify a vendor RIL and a device node
+rild.libpath=/system/lib64/libsec-ril.so
+rild.libargs=-d /dev/umts_ipc0
+
+# misc
+ro.chipname=exynos7570
+ro.arch=exynos7570
+
+# USB
+persist.sys.usb.config=mtp,adb
+
+# Allows healthd to boot directly from charger mode rather than initiating a reboot.
+ro.enable_boot_charger_mode=1

@@ -1,0 +1,8 @@
+[
+    {
+        "repository": "android_hardware_samsung",
+        "target_path": "hardware/samsung"
+        "repository": "android_device_samsung_universal7570-common",
+        "target_path": "device/samsung/universal7570-common"
+    }
+]
