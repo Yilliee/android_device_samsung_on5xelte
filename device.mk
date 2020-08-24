@@ -105,18 +105,34 @@ PRODUCT_PACKAGES += \
 # DRM
 PRODUCT_PACKAGES += \
 		android.hardware.drm@1.0-impl \
+		android.hardware.drm@1.0-service \
+		android.hardware.drm@1.0-service.widevine
 
 # GPS
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/compatibility_matrix.xml:system/compatibility_matrix.xml
+    $(LOCAL_PATH)/compatibility_matrix.xml:system/compatibility_matrix.xml \
     $(LOCAL_PATH)/configs/gps/gps.conf:system/etc/gps_debug.conf \
     $(LOCAL_PATH)/configs/gps/gps.cfg:system/vendor/etc/gnss/gps.cfg
 
 PRODUCT_PACKAGES += \
-    libshim_audio \
-    audioloader
+		libshim_audio \
+    		audioloader \
+		android.hardware.gnss@1.0-impl
+		PRODUCT_COPY_FILES += \
+
 PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:system/etc/usb_audio_policy_configuration.xml
+
+# Graphics
+PRODUCT_PACKAGES += \
+		libion \
+		libfimg \
+		android.hardware.graphics.allocator@2.0-impl \
+		android.hardware.graphics.allocator@2.0-service \
+		android.hardware.graphics.composer@2.1-impl \
+		android.hardware.graphics.mapper@2.0-impl \
+		libhwc2on1adapter \
+		gralloc.exynos5
 
 # Bluetooth
 PRODUCT_PACKAGES += \
@@ -282,14 +298,19 @@ PRODUCT_PACKAGES += \
 		init.wifi.rc \
 		init.zygote32.rc \
 		ueventd.goldfish.rc \
+		ueventd.ranchu.rc \
+		ueventd.rc \
 		ueventd.samsungexynos7570.rc
 
 # KeyLayout
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/gpio_keys.kl:system/usr/keylayout/gpio_keys.kl
+# RenderScript HAL
 PRODUCT_PACKAGES += \
 		android.hardware.renderscript@1.0 \
+		android.hardware.renderscript@1.0-impl
 
+# Flat device tree for boot image
 PRODUCT_PACKAGES += \
     dtbhtoolExynos
 
